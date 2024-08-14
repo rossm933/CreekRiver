@@ -33,11 +33,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Get campsites
 app.MapGet("/api/campsites", (CreekRiverDbContext db) =>
 {
     return db.Campsites.ToList();
 });
 
+// Get campsite by ID
 app.MapGet("/api/campsites/{id}", (CreekRiverDbContext db, int id) =>
 {
     Campsite campsite = null;
@@ -54,6 +56,14 @@ app.MapGet("/api/campsites/{id}", (CreekRiverDbContext db, int id) =>
         return campsite;
     }
     return null;
+});
+
+// Create campsite
+app.MapPost("/api/campsites", (CreekRiverDbContext db, Campsite campsite) =>
+{
+    db.Campsites.Add(campsite);
+    db.SaveChanges();
+    return Results.Created($"/api/campsites/{campsite.Id}", campsite);
 });
 
 app.Run();
